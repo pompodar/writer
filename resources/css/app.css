@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  /* font-family: 'Kalnia', serif; */
+  font-family: 'EB Garamond', serif;
+}
+
+.ql-editor {
+  font-family: 'EB Garamond', serif;
+}
+
+.mb-3 .ql-snow .ql-editor pre.ql-syntax {
+  font-family: 'Crimson Text', serif;
+  margin-top: 1rem;
+  border-radius: 0;
+  background-color: transparent;
+  margin-bottom: 0.6rem;
+  display: inline-block;
+  padding: 1.6em 1.2em;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: black;
+  border: 1px solid #555;
+  box-shadow: 5px 2px 4px rgba(0, 0, 0, 0.736);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  text-indent: 0;
+  width: 100%
+}
+
+.ql-syntax {
+  font-family: 'Crimson Text', serif;
+  color: black;
+  margin-top: 1rem;
+  margin-bottom: 0.6rem;
+  display: inline-block;
+  padding: 1.6em 1.2em;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  border: 1px solid #555;
+  box-shadow: 5px 2px 4px rgba(0, 0, 0, 0.736);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  text-indent: 0;
+  width: 100%
+}
+
+.ql-toolbar.ql-snow {
+  position: sticky;
+  top: 0;
+  background-color: rgb(113, 221, 55);
+  z-index: 1;
+}
+
+em {
+  margin-left: -0.2rem;
+  padding-bottom: 0.5rem;
+  position: relative;
+}
+    
+em:before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: rgb(113, 221, 55);
+  width: 6rem;
+  height: 0.1rem;
+}
+
+.card-text {
+    text-indent: 0.3rem;
+    text-align: justify;
+}
+
+.card {
+  position: relative;
+}
+
+.card:before {
+  content: "";
+  position: absolute;
+  top: -0.05rem;
+  left: -0.05rem;
+  width: 1.5rem;
+  height: 1.7rem;
+  border-top: 0.15rem solid rgb(113, 221, 55);
+  border-left: 0.15rem solid rgb(113, 221, 55);
+  border-top-left-radius: 4px;
+}
+
+.card-body h2{
+  color: rgb(113, 221, 55);
+  font-size: 1.1rem;
+  font-family: 'Kalnia', serif;
+  padding-bottom: 0.5rem;
+  position: relative;
+}
+
+.card-body h2:before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: tomato;
+  width: 2rem;
+  height: 0.1rem;
+}
+
+.pagination a {
+  color: rgb(113, 221, 55)
+}

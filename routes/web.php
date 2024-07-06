@@ -88,6 +88,10 @@ Route::get('/categories', function () {
     return Inertia::render('Add_Category', ['categories' => App\Models\Category::all()]);
  })->name('add_category');  
 
+Route::get('/history-articles', function () {
+    return Inertia::render('HistoryArticles');
+})->name('history_articles');
+
 Route::get('/{name}', function ($name) {
     $articles = [Category::where('name', $name)->first()->articles];
 

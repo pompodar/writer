@@ -12,7 +12,7 @@ const Articles = ({ auth, query }) => {
     const [categories, setCategories] = useState([]);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [perPage, setPerPage] = useState(5); // Number of articles per page
+    const [perPage, setPerPage] = useState(3); // Number of articles per page
 
     console.log(articles);
 
@@ -230,32 +230,30 @@ const Articles = ({ auth, query }) => {
 
     console.log(updatedArticle.categories);
 
-    function generateRandomNumber() {
-        return Math.floor(Math.random() * 63
+    function generateRandomNumber(pictures_number = 63) {
+        return Math.floor(Math.random() * pictures_number
         ) + 1;
     } 
 
-    const randomNumber = generateRandomNumber();
+    const randomNumber = generateRandomNumber(29);
 
     const bgClass = `bg-[url(../assets/img/elements/${randomNumber}.jpg)]`;
-    const bgUrl = `url(../assets/img/elements/${randomNumber}.jpg)`;
+    const bgUrl = `url(../assets/img/elements-white/${randomNumber}.jpg)`;
 
     return (
         <AuthenticatedLayout user={auth.user}>
-
             <nav
-                class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+                class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center"
                 id="layout-navbar">
                 <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
                     <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
                         <i class="bx bx-menu bx-sm"></i>
                     </a>
                 </div>
-
                 <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
                     <div class="navbar-nav align-items-center">
                         <div class="nav-item d-flex align-items-center">
-                            <i class="bx bx-search fs-4 lh-0"></i>
+                            <i class="bx bx-search fs-4 lh-0 text-indigo-500"></i>
                             <input
                                 type="text"
                                 class="form-control border-0 shadow-none ps-1 ps-sm-2"
@@ -347,8 +345,8 @@ const Articles = ({ auth, query }) => {
             <div className={`content-wrapper ${bgClass}`} style={{ backgroundImage: bgUrl, backgroundPosition: 'center', backgroundSize: 'cover' }}>
                 <div class="container-xxl flex-grow-1 container-p-y">
 
-                    <h4 class="py-1 mb-2 flex">
-                        <span class="fw-light text-[tomato] font-bold">Articles  / 
+                    <nav class="py-1 mb-2 flex justify-between align-center">
+                        <span class="fw-light text-[tomato] font-bold flex text-lg align-center">Articles  / 
                             <Link className="mr-2" href={"/articles/add/"}>
                                 <i
                                     style={{ color: '#71dd37', fontSize: 14 }}
@@ -367,8 +365,45 @@ const Articles = ({ auth, query }) => {
                                 <span onClick={clearFilters}>clear filters</span>
                             </span>
                         )}
-                    </h4>
+                        {results.length > 0 && (
+                            <ul className="pagination ml-auto">
+                                {/* Previous page link */}
+                                {currentPage > 1 && (
+                                    <li className="page-item">
+                                        <button className="page-link text-indigo-500" onClick={() => {
+                                            setCurrentPage(currentPage - 1);
+                                            fetchArticles(currentPage - 1);
+                                        }}
+                                        >
+                                            Previous
+                                        </button>
+                                    </li>
+                                )}
 
+                                {/* Page numbers */}
+                                {[...Array(results[0]?.total_pages || 1).keys()].map((page) => (
+                                    <li key={page + 1} className={`page-item ${page + 1 === currentPage ? 'active' : ''}`}>
+                                        <button className="page-link text-indigo-500" onClick={() => {
+                                            setCurrentPage(page + 1);
+                                            fetchArticles(page + 1);
+                                        }}>{page + 1}</button>                                
+                                    </li>
+                                ))}
+
+                                {/* Next page link */}
+                                {currentPage < results[0].total_pages && (
+                                    <li className="page-item">
+                                        <button className="page-link text-indigo-500" onClick={() => {
+                                            setCurrentPage(currentPage + 1);
+                                            fetchArticles(currentPage + 1);
+                                        }}>
+                                            Next
+                                        </button>                                
+                                    </li>
+                                )}
+                            </ul>
+                        )}
+                    </nav>
                     <div>
                         {results.length > 0 ? (
                             results.map((result) => {
@@ -567,42 +602,42 @@ const Articles = ({ auth, query }) => {
                     </div>
                     {results.length > 0 && (
                         <nav aria-label="Page navigation example">
-                        <ul className="pagination">
-                            {/* Previous page link */}
-                            {currentPage > 1 && (
-                                <li className="page-item">
-                                    <button className="page-link" onClick={() => {
-                                        setCurrentPage(currentPage - 1);
-                                        fetchArticles(currentPage - 1);
-                                    }}
-                                    >
-                                        Previous
-                                    </button>
-                                </li>
-                            )}
+                            <ul className="pagination">
+                                {/* Previous page link */}
+                                {currentPage > 1 && (
+                                    <li className="page-item">
+                                        <button className="page-link" onClick={() => {
+                                            setCurrentPage(currentPage - 1);
+                                            fetchArticles(currentPage - 1);
+                                        }}
+                                        >
+                                            Previous
+                                        </button>
+                                    </li>
+                                )}
 
-                            {/* Page numbers */}
-                            {[...Array(results[0]?.total_pages || 1).keys()].map((page) => (
-                                <li key={page + 1} className={`page-item ${page + 1 === currentPage ? 'active' : ''}`}>
-                                    <button className="page-link" onClick={() => {
-                                        setCurrentPage(page + 1);
-                                        fetchArticles(page + 1);
-                                    }}>{page + 1}</button>                                
-                                </li>
-                            ))}
+                                {/* Page numbers */}
+                                {[...Array(results[0]?.total_pages || 1).keys()].map((page) => (
+                                    <li key={page + 1} className={`page-item ${page + 1 === currentPage ? 'active' : ''}`}>
+                                        <button className="page-link" onClick={() => {
+                                            setCurrentPage(page + 1);
+                                            fetchArticles(page + 1);
+                                        }}>{page + 1}</button>                                
+                                    </li>
+                                ))}
 
-                            {/* Next page link */}
-                            {currentPage < results[0].total_pages && (
-                                <li className="page-item">
-                                    <button className="page-link" onClick={() => {
-                                        setCurrentPage(currentPage + 1);
-                                        fetchArticles(currentPage + 1);
-                                    }}>
-                                        Next
-                                    </button>                                
-                                </li>
-                            )}
-                        </ul>
+                                {/* Next page link */}
+                                {currentPage < results[0].total_pages && (
+                                    <li className="page-item">
+                                        <button className="page-link" onClick={() => {
+                                            setCurrentPage(currentPage + 1);
+                                            fetchArticles(currentPage + 1);
+                                        }}>
+                                            Next
+                                        </button>                                
+                                    </li>
+                                )}
+                            </ul>
                         </nav>
                     )}
                 </div>

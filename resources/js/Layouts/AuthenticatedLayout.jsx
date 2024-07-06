@@ -12,17 +12,28 @@ export default function Authenticated({ user, header, children }) {
     const [openCategories, setOpenCategories] = useState(initialOpenCategories);
 
 
-    const [categories, setCategoriess] = useState([]);
+    const [categories, setCategories] = useState([]);
 
     const [level, setLevel] = useState(0);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await axios.get('/api/categories-menu');
-            setCategoriess(response.data.categories);
-        };
+    const fetchCategories = async () => {
+        axios.get(`http://localhost:8080/wp-json/custom/v1/categories/`)
+        .then(function(response) {
+            var categories = response.data;
+            if (categories.length > 0) {
+                console.log(categories);
+                setCategories(categories);
+            } else {
+                console.log("No categories");
+            }
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+    };
 
-        fetchData();
+    useEffect(() => {
+        fetchCategories();
     }, []);
 
     const toggleAccordion = (category) => {
@@ -68,18 +79,24 @@ export default function Authenticated({ user, header, children }) {
         ));
     };    
 
-    function generateRandomNumber() {
-        return Math.floor(Math.random() * 13) + 1;
-    }
+    function generateRandomNumber(pictures_number = 13) {
+        return Math.floor(Math.random() * pictures_number
+        ) + 1;
+    } 
 
     const imageUrl = `/assets/img/elements/${generateRandomNumber()}.jpg`;
+
+    const randomNumber = generateRandomNumber(29);
+
+    const bgUrl = `url(../assets/img/elements-aside/${randomNumber}.jpg)`;
 
     return (
         <>
             <div class="layout-wrapper layout-content-navbar">
-                <div class="layout-container">
+                <div class="layout-container menu">
 
-                    <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+                    <aside id="layout-menu" class="layout-menu menu-vertical relative bg-menu-theme">
+                        <div className="decorative absolute bottom-0 left-0 right-0 top-[70%]" style={{backgroundImage: bgUrl}}></div>
                         <div class="app-brand demo">
                             <a href="/" class="app-brand-link">
                                 <span class="app-brand-logo demo">
@@ -114,7 +131,7 @@ export default function Authenticated({ user, header, children }) {
                         </ul>
                     </aside>
 
-                    <div class="layout-page">
+                    <div class="layout-page bg-white">
 
                         {children}
 

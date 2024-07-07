@@ -346,7 +346,7 @@ const Articles = ({ auth, query }) => {
                 <div class="container-xxl flex-grow-1 container-p-y">
 
                     <nav class="py-1 mb-2 flex justify-between align-center">
-                        <span class="fw-light text-[tomato] font-bold flex text-lg align-center">Articles  / 
+                        <span class="fw-light text-[tomato] font-bold flex text-lg align-center p-2 rounded bg-white">Articles  / 
                             <Link className="mr-2" href={"/articles/add/"}>
                                 <i
                                     style={{ color: '#71dd37', fontSize: 14 }}
@@ -366,7 +366,7 @@ const Articles = ({ auth, query }) => {
                             </span>
                         )}
                         {results.length > 0 && (
-                            <ul className="pagination ml-auto">
+                            <ul className="pagination ml-auto flex align-center">
                                 {/* Previous page link */}
                                 {currentPage > 1 && (
                                     <li className="page-item">

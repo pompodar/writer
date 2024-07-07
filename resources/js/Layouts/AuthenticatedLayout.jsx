@@ -9,9 +9,13 @@ import { Link, router } from '@inertiajs/react';
 export default function Authenticated({ user, header, children }) {
     const initialOpenCategories = JSON.parse(localStorage.getItem('openCategories')) || [];
 
+    const initialVisibleLevels = JSON.parse(localStorage.getItem('visibleLevels')) || [0, 1, 2];
+
     const [openCategories, setOpenCategories] = useState(initialOpenCategories);
     const [categories, setCategories] = useState([]);
     const [renderedCategories, setRenderedCategories] = useState([]);
+
+    const [visibleLevels, setVisibleLevels] = useState(initialVisibleLevels);
 
     const [categoryHierarchy, setCategoryHierarchy] = useState([]);
 
@@ -36,12 +40,34 @@ export default function Authenticated({ user, header, children }) {
         fetchCategories();
     }, []);
 
+    const isChildOfOpenCategory = (categoryId) => {
+        let parentId = categoryId;
+        while (parentId !== null) {
+            const parentCategory = categories.find(cat => cat.id === parentId);
+            if (!parentCategory) break;
+            if (openCategories.includes(parentCategory.id)) {
+                return true;
+            }
+            parentId = parentCategory.parent_id;
+        }
+        return false;
+    };
+
     const toggleAccordion = (category) => {
         if (openCategories.includes(category.id)) {
             setOpenCategories(openCategories.filter(id => id !== category.id));
         } else {
-            setOpenCategories([...openCategories, category.id]);
+            if (isChildOfOpenCategory(category.id)) {
+                setOpenCategories([...openCategories, category.id]);
+            } else {
+                setOpenCategories([category.id]);
+            }
         }
+
+        setVisibleLevels([category.level - 1, category.level, category.level + 1]);
+
+        localStorage.setItem('visibleLevels', JSON.stringify([category.level - 1, category.level, category.level + 1]));
+
         router.visit('/history-articles/', {
             method: 'get',
             data: { category: category.id },
@@ -83,12 +109,10 @@ export default function Authenticated({ user, header, children }) {
         return hierarchy;
     };
     
-
     const renderCategories = (categories, currentLevel) => {
-        console.log(categories, 'cats');
         return categories.map((category) => (
             <li style={{ marginLeft: currentLevel * 20 }} className={`level-${currentLevel} menu-item cursor-pointer`} key={category.id}>
-                <div className="menu-link accordion-header" onClick={() => toggleAccordion({ id: category.id, name: category.name })}>
+                <div className={`menu-link accordion-header ${!visibleLevels.includes(currentLevel) ? 'hidden' : ''}`} onClick={() => toggleAccordion({ id: category.id, name: category.name, level: currentLevel })}>
                     {category.name}
                 </div>
                 {isOpen(category.id) && category.children && (

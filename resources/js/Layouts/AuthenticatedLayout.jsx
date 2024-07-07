@@ -140,10 +140,10 @@ export default function Authenticated({ user, header, children }) {
                         <div className="decorative absolute bottom-0 left-0 right-0 top-[70%]" style={{ backgroundImage: bgUrl }}></div>
                         <div className="app-brand demo">
                             <a href="/" className="app-brand-link">
-                                <span className="app-brand-logo demo shadow-2xl" style={{ boxShadow: "5px 5px 5px 0px rgba(0,0,0,0.75)", borderRadius: "50%" }}>
-                                    <img src={imageUrl} alt className="w-px-40 h-auto rounded-circle shadow-2xl" />
+                                <span className="app-brand-logo demo shadow-2xl w-[72px] absolute top-[2px]" style={{ boxShadow: "5px 5px 5px 0px rgba(0,0,0,0.75)", borderRadius: "50%" }}>
+                                    <img src={imageUrl} alt className="h-auto rounded-circle shadow-2xl" />
                                 </span>
-                                <p className="app-brand-text demo menu-text fw-bold ms-2">Write<span style={{ color: "rgb(113, 221, 55)", fontSize: "3rem" }}>R</span></p>
+                                <p className="app-brand-text demo menu-text fw-bold ml-[80px]">Write<span style={{ color: "rgb(113, 221, 55)", fontSize: "3rem" }}>R</span></p>
                             </a>
                             <a href="javascript:void(0);" className="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
                                 <i className="bx bx-chevron-left bx-sm align-middle"></i>

@@ -88,8 +88,12 @@ Route::get('/categories', function () {
     return Inertia::render('Add_Category', ['categories' => App\Models\Category::all()]);
  })->name('add_category');  
 
-Route::get('/history-articles', function () {
-    return Inertia::render('HistoryArticles');
+Route::get('/history-articles', function (\Illuminate\Http\Request $request) {
+    $categoryId = $request->query('category');
+
+    return Inertia::render('HistoryArticles', [
+                'categoryId' => $categoryId,
+            ]);
 })->name('history_articles');
 
 Route::get('/{name}', function ($name) {
@@ -97,3 +101,4 @@ Route::get('/{name}', function ($name) {
 
     return Inertia::render('Articles', ['articles' => $articles]);
 })->name('category-articles');
+

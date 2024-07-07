@@ -14,7 +14,7 @@ const Articles = ({ auth, query }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [perPage, setPerPage] = useState(3); // Number of articles per page
 
-    console.log(articles);
+    const { categoryId } = usePage().props;
 
     const [editingArticle, setEditingArticle] = useState(null);
     const [updatedArticle, setUpdatedArticle] = useState({
@@ -27,7 +27,7 @@ const Articles = ({ auth, query }) => {
     useEffect(() => {
         fetchArticles();
         fetchCategories(); // Fetch categories when the component mounts
-    }, []);
+    }, [categoryId]);
 
     useEffect(() => {
         if (query) {
@@ -154,7 +154,7 @@ const Articles = ({ auth, query }) => {
     };
 
     const fetchArticles = async (currentPage = 1) => {
-        axios.get(`http://localhost:8080/wp-json/custom/v1/articles/?page=${currentPage}&per_page=${perPage}`)
+        axios.get(`http://localhost:8080/wp-json/custom/v1/articles_by_cat/?cat=${categoryId}&page=${currentPage}&per_page=${perPage}`)
         .then(function(response) {
             console.log(response);
             var posts = response.data;

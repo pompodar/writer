@@ -10,26 +10,26 @@ export default function Authenticated({ user, header, children }) {
     const initialOpenCategories = JSON.parse(localStorage.getItem('openCategories')) || [];
 
     const [openCategories, setOpenCategories] = useState(initialOpenCategories);
-
-
     const [categories, setCategories] = useState([]);
+    const [renderedCategories, setRenderedCategories] = useState([]);
 
-    const [level, setLevel] = useState(0);
+    const [categoryHierarchy, setCategoryHierarchy] = useState([]);
 
     const fetchCategories = async () => {
-        axios.get(`http://localhost:8080/wp-json/custom/v1/categories/`)
-        .then(function(response) {
-            var categories = response.data;
+        try {
+            const response = await axios.get(`http://localhost:8080/wp-json/custom/v1/categories/`);
+            const categories = response.data;
             if (categories.length > 0) {
                 console.log(categories);
                 setCategories(categories);
+                const hierarchy = buildCategoryHierarchy(categories);
+                setCategoryHierarchy(hierarchy);
             } else {
                 console.log("No categories");
             }
-        })
-        .catch(function(error) {
+        } catch (error) {
             console.log(error);
-        });
+        }
     };
 
     useEffect(() => {
@@ -37,30 +37,20 @@ export default function Authenticated({ user, header, children }) {
     }, []);
 
     const toggleAccordion = (category) => {
-       
         if (openCategories.includes(category.id)) {
-            setOpenCategories(openCategories.filter((id) => id !== category.id));
+            setOpenCategories(openCategories.filter(id => id !== category.id));
         } else {
-            
             setOpenCategories([...openCategories, category.id]);
-
-            
-            
         }
-        router.visit('/' + category.name.toLowerCase(), {
-                method: 'get',
-                preserveState: true,
-                onCancel: () => { },
-                onSuccess: (page) => {
-
-                },
-                onError: (errors) => {
-                    console.log(errors);
-                },
-                onFinish: visit => {
-
-                },
-            });
+        router.visit('/history-articles/', {
+            method: 'get',
+            data: { category: category.id },
+            preserveState: true,
+            onCancel: () => {},
+            onSuccess: (page) => {},
+            onError: (errors) => { console.log(errors); },
+            onFinish: visit => {},
+        });
     };
 
     useEffect(() => {
@@ -68,112 +58,116 @@ export default function Authenticated({ user, header, children }) {
     }, [openCategories]);
 
     const isOpen = (categoryId) => openCategories.includes(categoryId);
+
+    const buildCategoryHierarchy = (categories) => {
+        const categoryMap = {};
+    
+        // Create a map of categories
+        categories.forEach((category) => {
+            categoryMap[category.id] = { ...category, children: [] };
+        });
+    
+        const hierarchy = [];
+    
+        // Build the hierarchy
+        categories.forEach((category) => {
+            if (category.parent_id === null) {
+                hierarchy.push(categoryMap[category.id]);
+            } else {
+                categoryMap[category.parent_id].children.push(categoryMap[category.id]);
+            }
+        });
+
+        console.log(hierarchy, 'hierarchy');
+    
+        return hierarchy;
+    };
+    
+
     const renderCategories = (categories, currentLevel) => {
+        console.log(categories, 'cats');
         return categories.map((category) => (
-            <li style={{marginLeft: currentLevel * 5 }} className={`level-${currentLevel} menu-item cursor-pointer`} key={category.id}>
+            <li style={{ marginLeft: currentLevel * 20 }} className={`level-${currentLevel} menu-item cursor-pointer`} key={category.id}>
                 <div className="menu-link accordion-header" onClick={() => toggleAccordion({ id: category.id, name: category.name })}>
                     {category.name}
                 </div>
-                {isOpen(category.id) && category.find_children && renderCategories(category.find_children, currentLevel + 1)}
+                {isOpen(category.id) && category.children && (
+                    <ul>
+                        {renderCategories(category.children, currentLevel + 1)}
+                    </ul>
+                )}
             </li>
         ));
-    };    
+    };
 
     function generateRandomNumber(pictures_number = 13) {
-        return Math.floor(Math.random() * pictures_number
-        ) + 1;
+        return Math.floor(Math.random() * pictures_number) + 1;
     } 
 
     const imageUrl = `/assets/img/elements/${generateRandomNumber()}.jpg`;
-
     const randomNumber = generateRandomNumber(38);
-
     const bgUrl = `url(../assets/img/elements-aside/${randomNumber}.jpg)`;
 
     return (
         <>
-            <div class="layout-wrapper layout-content-navbar">
-                <div class="layout-container menu">
-
-                    <aside id="layout-menu" class="layout-menu menu-vertical relative bg-menu-theme">
-                        <div className="decorative absolute bottom-0 left-0 right-0 top-[70%]" style={{backgroundImage: bgUrl}}></div>
-                        <div class="app-brand demo">
-                            <a href="/" class="app-brand-link">
-                                <span class="app-brand-logo demo shadow-2xl">
-
-                                    <img src={imageUrl} alt class="w-px-40 h-auto rounded-circle shadow-2xl" />
-
+            <div className="layout-wrapper layout-content-navbar">
+                <div className="layout-container menu">
+                    <aside id="layout-menu" className="layout-menu menu-vertical relative bg-menu-theme">
+                        <div className="decorative absolute bottom-0 left-0 right-0 top-[70%]" style={{ backgroundImage: bgUrl }}></div>
+                        <div className="app-brand demo">
+                            <a href="/" className="app-brand-link">
+                                <span className="app-brand-logo demo shadow-2xl" style={{ boxShadow: "5px 5px 5px 0px rgba(0,0,0,0.75)", borderRadius: "50%" }}>
+                                    <img src={imageUrl} alt className="w-px-40 h-auto rounded-circle shadow-2xl" />
                                 </span>
-                                <p class="app-brand-text demo menu-text fw-bold ms-2">Write<span style={{ color: "rgb(113, 221, 55)", fontSize: "3rem"}}>R</span></p>
+                                <p className="app-brand-text demo menu-text fw-bold ms-2">Write<span style={{ color: "rgb(113, 221, 55)", fontSize: "3rem" }}>R</span></p>
                             </a>
-
-                            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-                                <i class="bx bx-chevron-left bx-sm align-middle"></i>
+                            <a href="javascript:void(0);" className="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+                                <i className="bx bx-chevron-left bx-sm align-middle"></i>
                             </a>
                         </div>
 
-                        <div class="menu-inner-shadow"></div>
-
-                        <ul class="menu-inner py-1">
-                            <li class="menu-item active open">
-                                <Link href="/articles" class="menu-link menu-toggle">
-                                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                        <ul className="menu-inner py-1">
+                            <li className="menu-item active open">
+                                <Link href="/articles" className="menu-link menu-toggle">
+                                    <i className="menu-icon tf-icons bx bx-home-circle"></i>
                                     <div data-i18n="Dashboards">All</div>
-                                    <div class="badge bg-danger rounded-pill ms-auto">5</div>
+                                    <div className="badge bg-danger rounded-pill ms-auto">5</div>
                                 </Link>
-                                <ul class="menu-sub">
-                                    {renderCategories(categories, level + 1)}                                    
-                                    
+                                <ul className="menu-sub">
+                                    {renderCategories(categoryHierarchy, 0)}
                                 </ul>
                             </li>
-
-                            
                         </ul>
                     </aside>
 
-                    <div class="layout-page bg-white">
-
+                    <div className="layout-page bg-white">
                         {children}
 
-                        <footer class="content-footer footer bg-footer-theme">
-                            <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-                                <div class="mb-2 mb-md-0">
+                        <footer className="content-footer footer bg-footer-theme">
+                            <div className="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                                <div className="mb-2 mb-md-0">
                                     ©
                                     <script>
                                         document.write(new Date().getFullYear());
                                     </script>
                                     , made with ❤️ by
-                                    <a href="https://themeselection.com" target="_blank" class="footer-link fw-medium text-indigo-500"> Pompodar</a>
+                                    <a href="https://themeselection.com" target="_blank" className="footer-link fw-medium text-indigo-500"> Pompodar</a>
                                 </div>
-                                <div class="d-none d-lg-inline-block">
-                                    <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
-                                    <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>
-
-                                    <a
-                                        href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/documentation/"
-                                        target="_blank"
-                                        class="footer-link me-4"
-                                    >Documentation</a
-                                    >
-
-                                    <a
-                                        href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
-                                        target="_blank"
-                                        class="footer-link"
-                                    >Support</a
-                                    >
+                                <div className="d-none d-lg-inline-block">
+                                    <a href="https://themeselection.com/license/" className="footer-link me-4" target="_blank">License</a>
+                                    <a href="https://themeselection.com/" target="_blank" className="footer-link me-4">More Themes</a>
+                                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/documentation/" target="_blank" className="footer-link me-4">Documentation</a>
+                                    <a href="https://github.com/themeselection/sneat-html-admin-template-free/issues" target="_blank" className="footer-link">Support</a>
                                 </div>
                             </div>
                         </footer>
 
-                        <div class="content-backdrop fade"></div>
+                        <div className="content-backdrop fade"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="layout-overlay layout-menu-toggle"></div>
-        
-
+            <div className="layout-overlay layout-menu-toggle"></div>
         </>
     );
 }

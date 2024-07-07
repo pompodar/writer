@@ -86,7 +86,7 @@ export default function Authenticated({ user, header, children }) {
 
     const imageUrl = `/assets/img/elements/${generateRandomNumber()}.jpg`;
 
-    const randomNumber = generateRandomNumber(29);
+    const randomNumber = generateRandomNumber(38);
 
     const bgUrl = `url(../assets/img/elements-aside/${randomNumber}.jpg)`;
 
@@ -99,9 +99,9 @@ export default function Authenticated({ user, header, children }) {
                         <div className="decorative absolute bottom-0 left-0 right-0 top-[70%]" style={{backgroundImage: bgUrl}}></div>
                         <div class="app-brand demo">
                             <a href="/" class="app-brand-link">
-                                <span class="app-brand-logo demo">
+                                <span class="app-brand-logo demo shadow-2xl">
 
-                                    <img src={imageUrl} alt class="w-px-40 h-auto rounded-circle" />
+                                    <img src={imageUrl} alt class="w-px-40 h-auto rounded-circle shadow-2xl" />
 
                                 </span>
                                 <p class="app-brand-text demo menu-text fw-bold ms-2">Write<span style={{ color: "rgb(113, 221, 55)", fontSize: "3rem"}}>R</span></p>

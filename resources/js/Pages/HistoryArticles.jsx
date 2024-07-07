@@ -153,7 +153,7 @@ const Articles = ({ auth, query }) => {
         });
     };
 
-    const fetchArticles = async () => {
+    const fetchArticles = async (currentPage = 1) => {
         axios.get(`http://localhost:8080/wp-json/custom/v1/articles/?page=${currentPage}&per_page=${perPage}`)
         .then(function(response) {
             console.log(response);
@@ -230,7 +230,7 @@ const Articles = ({ auth, query }) => {
 
     console.log(updatedArticle.categories);
 
-    function generateRandomNumber(pictures_number = 63) {
+    function generateRandomNumber(pictures_number = 72) {
         return Math.floor(Math.random() * pictures_number
         ) + 1;
     } 

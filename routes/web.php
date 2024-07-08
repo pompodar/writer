@@ -38,23 +38,23 @@ require __DIR__.'/auth.php';
 
 Route::delete('/users/{userId}', [UserController::class, 'deleteUser']);
 
-Route::get('/articles', function (SearchRepository $searchRepository) {
-    $articles = request()->has('q')
-        ? $searchRepository->search(request('q'))
-        : Article::with('categories')->paginate(5);
+// Route::get('/articles', function (SearchRepository $searchRepository) {
+//     $articles = request()->has('q')
+//         ? $searchRepository->search(request('q'))
+//         : Article::with('categories')->paginate(5);
 
-    foreach ($articles as $article) {
-        foreach ($article->categories as $category) {
+//     foreach ($articles as $article) {
+//         foreach ($article->categories as $category) {
             
-            $parents = $category->findParents();
-            // $parents now contains an array of parent categories
-        }
-    }
+//             $parents = $category->findParents();
+//             // $parents now contains an array of parent categories
+//         }
+//     }
 
-    return Inertia::render('Articles', [
-        'articles' => $articles,
-    ]);
-})->name('articles');
+//     return Inertia::render('Articles', [
+//         'articles' => $articles,
+//     ]);
+// })->name('articles');
 
 // Route::get('/cats', function (SearchRepository $searchRepository) {
 //     $categories = Category::with('findChildren')->whereNull('parent_id')->get();
@@ -88,17 +88,17 @@ Route::get('/categories', function () {
     return Inertia::render('Add_Category', ['categories' => App\Models\Category::all()]);
  })->name('add_category');  
 
-Route::get('/history-articles', function (\Illuminate\Http\Request $request) {
+Route::get('/articles', function (\Illuminate\Http\Request $request) {
     $categoryId = $request->query('category');
 
-    return Inertia::render('HistoryArticles', [
+    return Inertia::render('Articles', [
                 'categoryId' => $categoryId,
             ]);
-})->name('history_articles');
+})->name('articles');
 
-Route::get('/{name}', function ($name) {
-    $articles = [Category::where('name', $name)->first()->articles];
+// Route::get('/{name}', function ($name) {
+//     $articles = [Category::where('name', $name)->first()->articles];
 
-    return Inertia::render('Articles', ['articles' => $articles]);
-})->name('category-articles');
+//     return Inertia::render('Articles', ['articles' => $articles]);
+// })->name('category.articles');
 

@@ -5,16 +5,13 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
-const Articles = ({ auth, query }) => {
+const Articles = ({ auth, props, query }) => {
     const { articles } = usePage().props;
     const [searchQuery, setSearchQuery] = useState(query);
     const [results, setResults] = useState([]);
     const [categories, setCategories] = useState([]);
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [perPage, setPerPage] = useState(3); // Number of articles per page
-
-    const { categoryId } = usePage().props;
+    console.log(articles);
 
     const [editingArticle, setEditingArticle] = useState(null);
     const [updatedArticle, setUpdatedArticle] = useState({
@@ -25,9 +22,8 @@ const Articles = ({ auth, query }) => {
     });
 
     useEffect(() => {
-        fetchArticles();
         fetchCategories(); // Fetch categories when the component mounts
-    }, [categoryId]);
+    }, []);
 
     useEffect(() => {
         if (query) {
@@ -41,35 +37,28 @@ const Articles = ({ auth, query }) => {
             }
             const hitsArray = [];
 
-            // console.log(articles.data);
+            console.log(articles.data);
 
-            // for (const key in articles) {
-            //     console.log(articles);
-            //     hitsArray.push(articles[key]);
-            // }
+            for (const key in articles) {
+                console.log(articles);
+                hitsArray.push(articles[key]);
+            }
 
-            // if (searchQuery) {
-            //     setResults(() => articles);
-            // } else {
-            //     articles.data ? setResults(() => articles.data) : setResults(() => articles[0]);
-            // }
+            if (searchQuery) {
+                setResults(() => articles);
+            } else {
+                articles.data ? setResults(() => articles.data) : setResults(() => articles[0]);
+            }
         }
     }, [query, articles]);
 
     const fetchCategories = async () => {
-        axios.get(`http://localhost:8080/wp-json/custom/v1/categories/`)
-        .then(function(response) {
-            var categories = response.data;
-            if (categories.length > 0) {
-                console.log(categories);
-                setCategories(categories);
-            } else {
-                console.log("No categories");
-            }
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
+        try {
+            const response = await axios.get('/api/categories');
+            setCategories(response.data.categories);
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
     };
 
     const fetchSearchResults = (query) => {
@@ -153,21 +142,14 @@ const Articles = ({ auth, query }) => {
         });
     };
 
-    const fetchArticles = async (currentPage = 1) => {
-        axios.get(`http://localhost:8080/wp-json/custom/v1/articles_by_cat/?cat=${categoryId}&page=${currentPage}&per_page=${perPage}`)
-        .then(function(response) {
-            console.log(response);
-            var posts = response.data;
-            if (posts) {
-                console.log(posts);
-                setResults(posts);
-            } else {
-                console.log("No posts");
-            }
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
+    const fetchArticles = async () => {
+        try {
+            const response = await axios.get('/api/articles');
+            console.log(response.data);
+            setResults(response.data.articles);
+        } catch (error) {
+            console.error('Error fetching articles:', error);
+        }
     };
 
     const handleSearchInput = (e) => {
@@ -230,30 +212,55 @@ const Articles = ({ auth, query }) => {
 
     console.log(updatedArticle.categories);
 
-    function generateRandomNumber(pictures_number = 72) {
-        return Math.floor(Math.random() * pictures_number
+    function generateRandomNumber() {
+        return Math.floor(Math.random() * 63
         ) + 1;
     } 
 
-    const randomNumber = generateRandomNumber(29);
+    const getParentNames = (category) => {
+        const parentNames = [];
 
-    const bgClass = `bg-[url(../assets/img/elements/${randomNumber}.jpg)]`;
-    const bgUrl = `url(../assets/img/elements-white/${randomNumber}.jpg)`;
+        while (category && category.parent_id) {
+            parentNames.push(
+                <Link key={category.id} href={category.name.toLowerCase()}>
+                    {category.name}
+                </Link>
+            );
+            
+            if (category.parent_id) {
+                category = category.parent;
+            } else {
+                break;
+            }
+
+            console.log(parentNames);
+        }
+
+        // return parentNames.reverse().join(' / ');
+        return parentNames.reverse().map((element, index) => (
+            <React.Fragment key={index}>
+                {index > 0 && ' / '}
+                {element}
+            </React.Fragment>
+        ));
+    };
 
     return (
         <AuthenticatedLayout user={auth.user}>
+
             <nav
-                class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center"
+                class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
                 id="layout-navbar">
                 <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
                     <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
                         <i class="bx bx-menu bx-sm"></i>
                     </a>
                 </div>
+
                 <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
                     <div class="navbar-nav align-items-center">
                         <div class="nav-item d-flex align-items-center">
-                            <i class="bx bx-search fs-4 lh-0 text-indigo-500"></i>
+                            <i class="bx bx-search fs-4 lh-0"></i>
                             <input
                                 type="text"
                                 class="form-control border-0 shadow-none ps-1 ps-sm-2"
@@ -342,20 +349,15 @@ const Articles = ({ auth, query }) => {
                 
             </nav>
 
-            <div className={`content-wrapper ${bgClass}`} style={{ backgroundImage: bgUrl, backgroundPosition: 'center', backgroundSize: 'cover' }}>
+            <div class="content-wrapper">
                 <div class="container-xxl flex-grow-1 container-p-y">
 
-                    <nav class="py-1 mb-2 flex justify-between align-center">
-                        <span class="fw-light text-[tomato] font-bold flex text-lg align-center p-2 rounded bg-white">Articles  / 
+                    <h4 class="py-1 mb-2 flex">
+                        <span class="text-muted fw-light">Articles  / 
                             <Link className="mr-2" href={"/articles/add/"}>
-                                <i
+                                {""}<i
                                     style={{ color: '#71dd37', fontSize: 14 }}
-                                    class="inline-block bx ml-1 bx-edit-alt me-1">
-                                </i>
-                                <i
-                                    style={{  fontSize: 14 }}
-                                    class="bx bx-add-to-queue me-1 text-indigo-500">
-                                </i>
+                                    class="bx bx-edit-alt me-1"></i>add
                             </Link>
                         </span>
 
@@ -365,45 +367,8 @@ const Articles = ({ auth, query }) => {
                                 <span onClick={clearFilters}>clear filters</span>
                             </span>
                         )}
-                        {results.length > 0 && (
-                            <ul className="pagination ml-auto flex align-center">
-                                {/* Previous page link */}
-                                {currentPage > 1 && (
-                                    <li className="page-item">
-                                        <button className="page-link text-indigo-500" onClick={() => {
-                                            setCurrentPage(currentPage - 1);
-                                            fetchArticles(currentPage - 1);
-                                        }}
-                                        >
-                                            Previous
-                                        </button>
-                                    </li>
-                                )}
+                    </h4>
 
-                                {/* Page numbers */}
-                                {[...Array(results[0]?.total_pages || 1).keys()].map((page) => (
-                                    <li key={page + 1} className={`page-item ${page + 1 === currentPage ? 'active' : ''}`}>
-                                        <button className="page-link text-indigo-500" onClick={() => {
-                                            setCurrentPage(page + 1);
-                                            fetchArticles(page + 1);
-                                        }}>{page + 1}</button>                                
-                                    </li>
-                                ))}
-
-                                {/* Next page link */}
-                                {currentPage < results[0].total_pages && (
-                                    <li className="page-item">
-                                        <button className="page-link text-indigo-500" onClick={() => {
-                                            setCurrentPage(currentPage + 1);
-                                            fetchArticles(currentPage + 1);
-                                        }}>
-                                            Next
-                                        </button>                                
-                                    </li>
-                                )}
-                            </ul>
-                        )}
-                    </nav>
                     <div>
                         {results.length > 0 ? (
                             results.map((result) => {
@@ -473,7 +438,7 @@ const Articles = ({ auth, query }) => {
                                                                                     'indent',
                                                                                 ],
                                                                             }}
-                                                                            value={updatedArticle.content.renderd}
+                                                                            value={updatedArticle.body}
                                                                             onChange={handleChange}
                                                                         />
                                                                     </div>
@@ -539,7 +504,7 @@ const Articles = ({ auth, query }) => {
                                                                         <h2 class="card-title">{result.title}</h2>
                                                                     </Link>
                                                                     <div className="card-text">
-                                                                        <TruncateHTML html={result.content} maxWords={100} />
+                                                                        <TruncateHTML html={result.body} maxWords={36} />
                                                                     </div>
                                                                         {result.tags && (
                                                                             <div className="mt-3">
@@ -557,28 +522,31 @@ const Articles = ({ auth, query }) => {
                                                                         {result.categories && (
                                                                             <ul className="mt-2">
                                                                                 {result.categories.map((category) => (
-                                                                                    <li key={category}>
-                                                                                        {category.ancestors.map((ancestor) => (
-                                                                                            <li key={ancestor.id}>
-                                                                                                <span className="text-xs mt-4 px-2 py-1 rounded bg-indigo-50 text-indigo-500">
-                                                                                                    {ancestor.name} {" / "}
-                                                                                                </span>
-                                                                                            </li>
-                                                                                        ))}
-                                                                                        <span className="text-xs mt-4 px-2 py-1 rounded bg-indigo-50 text-indigo-500 underline">
-                                                                                            {category.name}
+                                                                                    <li key={category.id}>
+                                                                                        <span className="text-xs mt-4 px-2 py-1 rounded bg-indigo-50 text-indigo-500">
+                                                                                            {/* {category.parent && category.parent.name + " / "}{category.name} */}
+                     
+                                                                                            {getParentNames(category)}
                                                                                         </span>
-                                                                                        {category.descendants.map((descendant) => (
-                                                                                            <li key={descendant.id}>
-                                                                                                <span className="text-xs mt-4 px-2 py-1 rounded bg-indigo-50 text-indigo-500">
-                                                                                                   {" / "} {descendant.name}
-                                                                                                </span>
-                                                                                            </li>
-                                                                                        ))}
                                                                                     </li>
                                                                                 ))}
                                                                             </ul>
                                                                         )}
+
+                                                                    {/* <button
+                                                                        className="mr-2 mt-2"
+                                                                        onClick={() => handleEdit(result)}>
+                                                                        <i
+                                                                            style={{ color: '#71dd37' }}
+                                                                            class="bx bx-edit-alt me-1"></i>
+                                                                        <small>edit</small>
+                                                                    </button> */}
+                                                                    {/* <button
+                                                                        className="mr-2 mt-2"
+                                                                        onClick={() => handleDelete(result.id)}>
+                                                                        <i class="bx bx-trash me-1 text-danger"></i>
+                                                                        <small>delete</small>
+                                                                    </button> */}
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-4">
@@ -600,46 +568,17 @@ const Articles = ({ auth, query }) => {
                             <p>No articles found</p>
                         )}
                     </div>
-                    {results.length > 0 && (
-                        <nav aria-label="Page navigation example">
-                            <ul className="pagination">
-                                {/* Previous page link */}
-                                {currentPage > 1 && (
-                                    <li className="page-item">
-                                        <button className="page-link" onClick={() => {
-                                            setCurrentPage(currentPage - 1);
-                                            fetchArticles(currentPage - 1);
-                                        }}
-                                        >
-                                            Previous
-                                        </button>
-                                    </li>
-                                )}
 
-                                {/* Page numbers */}
-                                {[...Array(results[0]?.total_pages || 1).keys()].map((page) => (
-                                    <li key={page + 1} className={`page-item ${page + 1 === currentPage ? 'active' : ''}`}>
-                                        <button className="page-link" onClick={() => {
-                                            setCurrentPage(page + 1);
-                                            fetchArticles(page + 1);
-                                        }}>{page + 1}</button>                                
-                                    </li>
-                                ))}
+                    {/* Display pagination links */}
+                    <div className="pagination">
+                        {articles.prev_page_url && (
+                            <Link className="mr-2" href={articles.prev_page_url}>
+                                Previous
+                            </Link>
+                        )}
 
-                                {/* Next page link */}
-                                {currentPage < results[0].total_pages && (
-                                    <li className="page-item">
-                                        <button className="page-link" onClick={() => {
-                                            setCurrentPage(currentPage + 1);
-                                            fetchArticles(currentPage + 1);
-                                        }}>
-                                            Next
-                                        </button>                                
-                                    </li>
-                                )}
-                            </ul>
-                        </nav>
-                    )}
+                        {articles.next_page_url && <Link href={articles.next_page_url}>Next</Link>}
+                    </div>
                 </div>
             </div>
         </AuthenticatedLayout>

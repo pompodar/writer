@@ -727,7 +727,9 @@ const Articles = ({ auth, query }) => {
                                                                                             }))
                                                                                             .sort((a, b) => a.level - b.level)
                                                                                             .map((ancestor) => (
-                                                                                                <li key={ancestor.id} onClick={() => toggleAccordion({ id: ancestor.id, name: ancestor.name, level: categoryLevels[ancestor.id] })} className="inline cursor-pointer">
+                                                                                                <li key={ancestor.id} 
+                                                                                                // onClick={() => toggleAccordion({ id: ancestor.id, name: ancestor.name, level: categoryLevels[ancestor.id] })}
+                                                                                                className="inline">
                                                                                                     <span className="text-xs mt-4 px-2 py-1 rounded bg-indigo-50 text-indigo-500">
                                                                                                         {ancestor.name}
                                                                                                     </span>

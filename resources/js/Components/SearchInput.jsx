@@ -12,11 +12,6 @@ const SearchInput = ({ searchQuery, handleSearchInput, clearFilters }) => {
                 value={searchQuery}
                 onChange={handleSearchInput}
             />
-            {searchQuery && (
-                <span className="text-muted fw-light cursor-pointer ml-auto" onClick={clearFilters}>
-                    clear filters
-                </span>
-            )}
         </div>
     );
 };

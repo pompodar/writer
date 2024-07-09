@@ -19,7 +19,7 @@ const Articles = ({ auth, props, query }) => {
     });
 
     useEffect(() => {
-        fetchCategories(); // Fetch categories when the component mounts
+        fetchCategories();
     }, []);
 
     const fetchCategories = async () => {
@@ -152,10 +152,10 @@ const Articles = ({ auth, props, query }) => {
 
     return (
         <AuthenticatedLayout user={auth.user}>
-            <div class="content-wrapper">
-                <div class="container-xxl flex-grow-1 container-p-y">
-                    <h4 class="py-1 mb-2">
-                        <span class="text-muted fw-light">
+            <div className="content-wrapper">
+                <div className="container-xxl flex-grow-1 container-p-y">
+                    <h4 className="py-1 mb-2">
+                        <span className="text-muted fw-light">
                         
                             <Link className="mr-2" href={"/articles/"}>
                                 Articles
@@ -169,14 +169,14 @@ const Articles = ({ auth, props, query }) => {
                                 <article key={article.id}>
                                     {editingArticle === article ? (
                                         <>
-                                            <div class="row">
-                                                <div class="col-xl">
-                                                    <div class="card mb-4">
-                                                        <div class="card-header d-flex justify-content-between align-items-center"></div>
-                                                        <div class="card-body">
+                                            <div className="row">
+                                                <div className="col-xl">
+                                                    <div className="card mb-4">
+                                                        <div className="card-header d-flex justify-content-between align-items-center"></div>
+                                                        <div className="card-body">
                                                             <div>
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="basic-default-fullname">
+                                                                <div className="mb-3">
+                                                                    <label className="form-label" for="basic-default-fullname">
                                                                         Title
                                                                     </label>
                                                                     <input
@@ -188,8 +188,8 @@ const Articles = ({ auth, props, query }) => {
                                                                         onChange={(e) => handleInputChange(e)}
                                                                     />
                                                                 </div>
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="basic-default-company">
+                                                                <div className="mb-3">
+                                                                    <label className="form-label" for="basic-default-company">
                                                                         Content
                                                                     </label>
                                                                     <ReactQuill
@@ -235,8 +235,8 @@ const Articles = ({ auth, props, query }) => {
                                                                     />
                                                                 </div>
 
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="basic-default-tags">
+                                                                <div className="mb-3">
+                                                                    <label className="form-label" for="basic-default-tags">
                                                                         Tags
                                                                     </label>
                                                                     <input
@@ -249,8 +249,8 @@ const Articles = ({ auth, props, query }) => {
                                                                     />
                                                                 </div>
 
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="basic-default-categories">
+                                                                <div className="mb-3">
+                                                                    <label className="form-label" for="basic-default-categories">
                                                                         Categories
                                                                     </label>
                                                                     <br/>
@@ -287,12 +287,12 @@ const Articles = ({ auth, props, query }) => {
                                         </>
                                     ) : (
                                         <>
-                                            <div class="col-md">
-                                                <div class="card mb-3">
-                                                    <div class="row g-0">
-                                                        <div class="col-md-8">
-                                                            <div class="card-body">
-                                                                <h2 class="card-title">{article.title}</h2>
+                                            <div className="col-md">
+                                                <div className="card mb-3">
+                                                    <div className="row g-0">
+                                                        <div className="col-md-8">
+                                                            <div className="card-body">
+                                                                <h2 className="card-title">{article.title}</h2>
 
                                                                 <div className="card-text">
                                                                   <div dangerouslySetInnerHTML={{ __html: article.body }} />
@@ -325,20 +325,20 @@ const Articles = ({ auth, props, query }) => {
                                                                     onClick={() => handleEdit(article)}>
                                                                     <i
                                                                         style={{ color: '#71dd37' }}
-                                                                        class="bx bx-edit-alt me-1"></i>
+                                                                        className="bx bx-edit-alt me-1"></i>
                                                                     <small>edit</small>
                                                                 </button>
                                                                 <button
                                                                     className="mr-2 mt-2"
                                                                     onClick={() => handleDelete(article.id)}>
-                                                                    <i class="bx bx-trash me-1 text-danger"></i>
+                                                                    <i className="bx bx-trash me-1 text-danger"></i>
                                                                     <small>delete</small>
                                                                 </button>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-4">
+                                                        <div className="col-md-4">
                                                             <img
-                                                                class="card-img card-img-right"
+                                                                className="card-img card-img-right"
                                                                 src={imageUrl}
                                                                 alt="Card image"
                                                             />

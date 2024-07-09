@@ -1,13 +1,7 @@
 import React from 'react';
 import { Link } from '@inertiajs/react';
 
-const ArticleCard = ({ article, categoryLevels }) => {
-    const generateRandomNumber = (pictures_number = 72) => {
-        return Math.floor(Math.random() * pictures_number) + 1;
-    };
-
-    const imageUrl = `../assets/img/elements/${generateRandomNumber()}.jpg`;
-
+const ArticleCard = ({ article, categoryLevels, imageCard }) => {
     const TruncateHTML = ({ html, maxWords }) => {
         const doc = new DOMParser().parseFromString(html, 'text/html');
         const text = doc.body.textContent || '';
@@ -26,14 +20,14 @@ const ArticleCard = ({ article, categoryLevels }) => {
         <article key={article.id}>
             <div className="col-md">
                 <div className="card mb-3">
-                    <div className="row g-0">
-                        <div className="col-md-8">
+                    <div className="row g-0 flex align-items-center">
+                        <div className="w-full lg:w-[66.66666667%] self-start">
                             <div className="card-body">
                                 <Link className="mr-2 inline-block" href={`/articles/${article.id}/`}>
                                     <h2 className="card-title">{article.title}</h2>
                                 </Link>
                                 <div className="card-text">
-                                    <TruncateHTML html={article.content} maxWords={100} />
+                                    <TruncateHTML html={article.content} maxWords={276} />
                                 </div>
                                 {article.tags && (
                                     <div className="mt-3">
@@ -55,7 +49,7 @@ const ArticleCard = ({ article, categoryLevels }) => {
                                                     }))
                                                     .sort((a, b) => a.level - b.level)
                                                     .map((ancestor) => (
-                                                        <li key={ancestor.id}>
+                                                        <li key={ancestor.id} className="inline">
                                                             <span className="text-xs mt-4 px-2 py-1 rounded bg-indigo-50 text-indigo-500">
                                                                 {ancestor.name}
                                                             </span>
@@ -70,8 +64,8 @@ const ArticleCard = ({ article, categoryLevels }) => {
                                 )}
                             </div>
                         </div>
-                        <div className="col-md-4">
-                            <img className="card-img card-img-right" src={imageUrl} alt="Card image" />
+                        <div className="col-md-4 max-lg:h-96 max-lg:w-full">
+                            <img className="card-img card-img-right max-lg:w-auto max-lg:h-full max-lg:m-auto" src={imageCard} alt="Card image" />
                         </div>
                     </div>
                 </div>

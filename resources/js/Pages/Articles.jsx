@@ -14,11 +14,15 @@ const Articles = ({ auth, query }) => {
     const [searchQuery, setSearchQuery] = useState(query);
     const [results, setResults] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [imageLogo, setImageLogo] = useState(null);
+    const [imageAside, setImageAside] = useState(null);
+    const [imageCard, setImageCard] = useState(null);
+    const [imageBack, setImageBack] = useState(null);
 
     const [categoryLevels, setCategoryLevels] = useState({});
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [perPage, setPerPage] = useState(3);
+    const [perPage, setPerPage] = useState(1);
 
     const { categoryId } = usePage().props;
 
@@ -32,17 +36,11 @@ const Articles = ({ auth, query }) => {
 
     const [categoryHierarchy, setCategoryHierarchy] = useState([]);
 
-    function generateRandomNumber(pictures_number = 72) {
-        return Math.floor(Math.random() * pictures_number
-        ) + 1;
-    } 
-
     const fetchCategories = async () => {
         try {
             const response = await axios.get(`http://localhost:8080/wp-json/custom/v1/categories/`);
             const categories = response.data;
             if (categories.length > 0) {
-                console.log(categories);
                 setCategories(categories);
                 const { hierarchy, levelMap } = buildCategoryHierarchy(categories);
                 setCategoryHierarchy(hierarchy);
@@ -55,9 +53,44 @@ const Articles = ({ auth, query }) => {
         }
     };
 
+    const fetchImages = async (cat) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/wp-json/custom/v1/media/?category_slug=${cat}`);
+            const images = response.data;
+            if (images.length > 0) {
+                const randomIndex = Math.floor(Math.random() * images.length);
+                const randomImage = images[randomIndex];
+                return randomImage.url;
+            } else {
+                console.log("No images");
+                return null;
+            }
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    };
+
     useEffect(() => {
-        fetchCategories();
+        const fetchCategoriesAndImage = async () => {
+            await fetchCategories();
+            const imageAside = await fetchImages('aside');
+            setImageAside(imageAside);
+
+            const imageLogo = await fetchImages('logo');
+            setImageLogo(imageLogo);
+
+            const imageCard = await fetchImages('card');
+            setImageCard(imageCard);
+
+            const imageBack = await fetchImages('back');
+            setImageBack(imageBack);
+        };
+        
+        fetchCategoriesAndImage();
     }, []);
+    
+    
 
     const isChildOfOpenCategory = (categoryId) => {
         let parentId = categoryId;
@@ -128,14 +161,8 @@ const Articles = ({ auth, query }) => {
 
         hierarchy.forEach(rootCategory => setLevels(rootCategory, 0));
 
-        console.log(hierarchy, 'hierarchy');
-
         return { hierarchy, levelMap };
     };
-
-    const imageUrlAside = `/assets/img/elements/${generateRandomNumber(13)}.jpg`;
-    const randomNumberAside = generateRandomNumber(38);
-    const bgUrlAside = `url(../assets/img/elements-aside/${randomNumberAside}.jpg)`;
 
     useEffect(() => {
         fetchArticles();
@@ -212,33 +239,32 @@ const Articles = ({ auth, query }) => {
         fetchArticles();
     };
 
-    const randomNumber = generateRandomNumber(29);
-
-    const bgClass = `bg-[url(../assets/img/elements/${randomNumber}.jpg)]`;
-    const bgUrl = `url(../assets/img/elements-white/${randomNumber}.jpg)`;
-
     return (
         <AuthenticatedLayout user={auth.user}>
             <Aside 
-                imageUrlAside={imageUrlAside}
-                bgUrlAside={bgUrlAside}
+                imageLogo={imageLogo}
+                imageAside={imageAside}
                 categoryHierarchy={categoryHierarchy}
                 openCategories={openCategories}
                 toggleAccordion={toggleAccordion}
                 visibleLevels={visibleLevels}
             />
             <div className="layout-page bg-white">
-                <nav
-                    class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center"
-                    id="layout-navbar"
-                >
-                    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
-                        <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
-                            <i class="bx bx-menu bx-sm"></i>
+                <nav className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center" id="layout-navbar">
+                    <div className="app-brand demo lg:hidden max-w-0 mr-[66px]">
+                        <a href="/" className="app-brand-link">
+                            <span className="app-brand-logo demo shadow-2xl w-[72px] h-[72px] absolute top-[-10px] left-0" style={{ boxShadow: "5px 5px 5px 0px rgba(0,0,0,0.75)", borderRadius: "50%" }}>
+                                <img src={imageLogo} alt className="h-full w-full rounded-circle shadow-2xl" />
+                            </span>
                         </a>
                     </div>
-                    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-                        <div class="navbar-nav align-items-center">
+                    <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                        <a className="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                            <i className="bx bx-menu bx-sm"></i>
+                        </a>
+                    </div>
+                    <div className="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+                        <div className="navbar-nav align-items-center">
                             <SearchInput 
                                 searchQuery={searchQuery}
                                 handleSearchInput={handleSearchInput}
@@ -248,21 +274,15 @@ const Articles = ({ auth, query }) => {
                         />    
                     </div>                    
                 </nav>
-                <div className={`content-wrapper ${bgClass}`} style={{ backgroundImage: bgUrl, backgroundPosition: 'center', backgroundSize: 'cover' }}>
-                    <div class="container-xxl flex-grow-1 container-p-y">
-                        <nav class="py-1 mb-2 flex justify-between align-center">
-                            <span class="fw-light text-[tomato] font-bold flex text-lg align-center p-2 rounded bg-white">Articles / 
-                                <Link className="mr-2" href={"/articles/add/"}>
-                                    <i
-                                        style={{  fontSize: 14 }}
-                                        class="bx bx-add-to-queue text-indigo-500 ml-[1.6px] mt-[-2.5px]">
-                                    </i>
-                                </Link>
-                            </span>
+                <div className={`content-wrapper`} style={{backgroundImage: `url(${imageBack})`, backgroundPosition: 'center', backgroundSize: 'cover' }}>
+                    <div className="container-xxl flex-grow-1 container-p-y">
+                        <nav className="py-1 mb-2 flex justify-between align-items-center">
+                            <Link className="mr-2 flex align-items-center bg-white p-2 rounded" href={"/articles/add/"}>
+                                <i className="bx bx-add-to-queue text-indigo-500 text-2xlg hover:text-[tomato]"></i>
+                            </Link>
                             {searchQuery && (
-                                <span class="text-muted fw-light cursor-pointer ml-auto">
-                                    {/* Using search: <strong>"{searchQuery}"</strong>.{' '} */}
-                                    <span onClick={clearFilters}>clear filters</span>
+                                <span className="text-muted fw-light cursor-pointer ml-auto">
+\                                    <span onClick={clearFilters}>clear filters</span>
                                 </span>
                             )}
                             {results.length > 0 && (
@@ -281,8 +301,10 @@ const Articles = ({ auth, query }) => {
                                 results.map((result) => {
                                     return (
                                         <ArticleCard 
+                                            key={result.id}
                                             article={result}
                                             categoryLevels={categoryLevels}
+                                            imageCard={imageCard}
                                         />
                                     )
                                 })

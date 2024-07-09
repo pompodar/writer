@@ -75,25 +75,25 @@ const AddArticle = ({auth}) => {
 
     return (
         <AuthenticatedLayout user={auth.user}>
-            <div class="content-wrapper">
-                <div class="container-xxl flex-grow-1 container-p-y">
-                    <h4 class="py-1 mb-2">
-                        <span class="text-muted fw-light">
+            <div className="content-wrapper">
+                <div className="container-xxl flex-grow-1 container-p-y">
+                    <h4 className="py-1 mb-2">
+                        <span className="text-muted fw-light">
                             <Link className="mr-2" href={"/articles"}>
                                 Articles
                             </Link>
                         /</span>
                     </h4>
 
-        <div class="row add-article">
-            <div class="col-xl">
-                <div class="card mb-4">
-                    <div class="card-header d-flex justify-content-between align-items-center"></div>
-                    <div class="card-body">
+        <div className="row add-article">
+            <div className="col-xl">
+                <div className="card mb-4">
+                    <div className="card-header d-flex justify-content-between align-items-center"></div>
+                    <div className="card-body">
                 <form onSubmit={handleSubmit}>
 
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="basic-default-fullname">
+                                                                <div className="mb-3">
+                                                                    <label className="form-label" for="basic-default-fullname">
                                                                         Title
                                                                     </label>
                                                                     <input
@@ -105,8 +105,8 @@ const AddArticle = ({auth}) => {
                                                                         onChange={handleTitleChange}
                                                                     />
                                                                 </div>
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="basic-default-company">
+                                                                <div className="mb-3">
+                                                                    <label className="form-label" for="basic-default-company">
                                                                         Content
                                                                     </label>
                                                                     <ReactQuill
@@ -152,8 +152,8 @@ const AddArticle = ({auth}) => {
                                                                     />
                                                                 </div>
 
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="basic-default-tags">
+                                                                <div className="mb-3">
+                                                                    <label className="form-label" for="basic-default-tags">
                                                                         Tags
                                                                     </label>
                                                                     <input
@@ -166,8 +166,8 @@ const AddArticle = ({auth}) => {
                                                                     />
                                                                 </div>
 
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="basic-default-categories">
+                                                                <div className="mb-3">
+                                                                    <label className="form-label" for="basic-default-categories">
                                                                         Categories
                                                                     </label>
                                                                     <br/>

@@ -5,6 +5,20 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         return null; // Don't render pagination if there's only one page
     }
 
+    const getPages = () => {
+        let pages = [];
+        if (currentPage > 1) {
+            pages.push(currentPage - 1);
+        }
+        pages.push(currentPage);
+        if (currentPage < totalPages) {
+            pages.push(currentPage + 1);
+        }
+        return pages;
+    };
+
+    const pages = getPages();
+
     return (
         <nav aria-label="Page navigation example">
             <ul className="pagination">
@@ -17,10 +31,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
                     </li>
                 )}
                 {/* Pages */}
-                {[...Array(totalPages).keys()].map((page) => (
-                    <li key={page + 1} className={`page-item ${page + 1 === currentPage ? 'active' : ''}`}>
-                        <button className="page-link" onClick={() => onPageChange(page + 1)}>
-                            {page + 1}
+                {pages.map((page) => (
+                    <li key={page} className={`page-item ${page === currentPage ? 'active' : ''}`}>
+                        <button className="page-link" onClick={() => onPageChange(page)}>
+                            {page}
                         </button>
                     </li>
                 ))}

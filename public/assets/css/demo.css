@@ -144,29 +144,17 @@
   }
 }
 
-@media (max-width: 1199.98px) {
-  .layout-menu {
-    position: static !important;
-    top: 0 !important;
-    height: 100% !important;
-    left: 0 !important;
-    margin-right: 0 !important;
-    margin-left: 0 !important;
-    transform: translate3d(0, 0, 0);
-    will-change: transform,
-      -webkit-transform;
-  }
-}
-
 @media (max-width: 1023px) {
  .layout-menu {
-    position: fixed !important;
+    position: sticky !important;
     top: 0 !important;
-    height: 100% !important;
+    overflow: auto;
+    max-height: 310px !important;
+    height: max-content;
+    width: 100%;
     left: 0 !important;
     margin-right: 0 !important;
     margin-left: 0 !important;
-    transform: translate3d(-100%, 0, 0);
     will-change: transform,
     -webkit-transform;
   }

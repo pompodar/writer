@@ -64,7 +64,7 @@ const ArticleCard = ({ article, categoryLevels, imageCard }) => {
                                 )}
                             </div>
                         </div>
-                        <div className="col-md-4 max-lg:h-96 max-lg:w-full">
+                        <div className="col-md-4 max-lg:h-auto max-lg:w-full">
                             <img className="card-img card-img-right max-lg:w-auto max-lg:h-full max-lg:m-auto" src={imageCard} alt="Card image" />
                         </div>
                     </div>

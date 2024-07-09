@@ -18,6 +18,7 @@ const Articles = ({ auth, query }) => {
     const [imageAside, setImageAside] = useState(null);
     const [imageCard, setImageCard] = useState(null);
     const [imageBack, setImageBack] = useState(null);
+    const [menuOpen, setMenuOpen] = useState(false);
 
     const [categoryLevels, setCategoryLevels] = useState({});
 
@@ -250,32 +251,39 @@ const Articles = ({ auth, query }) => {
                 openCategories={openCategories}
                 toggleAccordion={toggleAccordion}
                 visibleLevels={visibleLevels}
+                menuOpen={menuOpen}
+                setMenuOpen={setMenuOpen}
             />
-            <div className="layout-page bg-white">
-                <nav className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center" id="layout-navbar">
-                    <div className="app-brand demo lg:hidden max-w-0 mr-[66px]">
-                        <a href="/" className="app-brand-link">
-                            <span className="app-brand-logo demo shadow-2xl w-[72px] h-[72px] absolute top-[-10px] left-0" style={{ boxShadow: "5px 5px 5px 0px rgba(0,0,0,0.75)", borderRadius: "50%" }}>
-                                <img src={imageLogo} alt className="h-full w-full rounded-circle shadow-2xl" />
-                            </span>
-                        </a>
-                    </div>
-                    <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
-                        <a className="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
-                            <i className="bx bx-menu bx-sm"></i>
-                        </a>
-                    </div>
-                    <div className="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-                        <div className="navbar-nav align-items-center">
-                            <SearchInput 
-                                searchQuery={searchQuery}
-                                handleSearchInput={handleSearchInput}
-                            />
+            <div className="layout-page bg-white max-lg:w-full">
+                {!menuOpen && (
+                    <nav className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center" id="layout-navbar">
+                        <div className="app-brand demo lg:hidden max-w-0 mr-[66px]">
+                            <a href="/" className="app-brand-link">
+                                <span className="app-brand-logo demo shadow-2xl w-[72px] h-[72px] absolute top-[-10px] left-0" style={{ boxShadow: "5px 5px 5px 0px rgba(0,0,0,0.75)", borderRadius: "50%" }}>
+                                    <img src={imageLogo} alt className="h-full w-full rounded-circle shadow-2xl" />
+                                </span>
+                            </a>
                         </div>
-                        <ProfileDropdown
-                        />    
-                    </div>                    
-                </nav>
+                        <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                            <a className="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                                <i 
+                                className="bx bx-menu bx-sm"
+                                onClick={() => setMenuOpen(!menuOpen)}
+                                ></i>
+                            </a>
+                        </div>
+                        <div className="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+                            <div className="navbar-nav align-items-center">
+                                <SearchInput 
+                                    searchQuery={searchQuery}
+                                    handleSearchInput={handleSearchInput}
+                                />
+                            </div>
+                            <ProfileDropdown
+                            />    
+                        </div>                    
+                    </nav>
+                )}
                 <div className={`content-wrapper`} style={{backgroundImage: `url(${imageBack})`, backgroundPosition: 'center', backgroundSize: 'cover' }}>
                     <div className="container-xxl flex-grow-1 container-p-y">
                         <nav className="py-1 mb-2 flex justify-between align-items-center">

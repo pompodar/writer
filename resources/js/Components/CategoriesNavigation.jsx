@@ -20,7 +20,7 @@ const CategoriesNavigation = ({ categoryHierarchy, openCategories, toggleAccordi
     const isOpen = (categoryId) => openCategories.includes(categoryId);
 
     return (
-        <ul className="menu-sub">
+        <ul className="menu-sub lg:flex">
             {renderCategories(categoryHierarchy, 0)}
         </ul>
     );

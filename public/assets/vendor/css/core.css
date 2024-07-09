@@ -16908,6 +16908,15 @@ html:not(.layout-menu-fixed) .menu-inner-shadow {
 .menu-vertical .menu-inner > .menu-header {
   width: 16.25rem;
 }
+
+@media (max-width: 1024px) {
+  .menu-vertical,
+  .menu-vertical .menu-block,
+  .menu-vertical .menu-inner > .menu-item,
+  .menu-vertical .menu-inner > .menu-header {
+    width: 100%;
+}
+}
 .menu-vertical .menu-inner {
   flex-direction: column;
   flex: 1 1 auto;
@@ -17222,7 +17231,6 @@ html:not(.layout-menu-fixed) .menu-inner-shadow {
 .layout-content-navbar .layout-page {
   flex-basis: 100%;
   flex-direction: column;
-  width: 0;
   min-width: 0;
   max-width: 100%;
 }
@@ -17301,16 +17309,6 @@ html:not(.layout-footer-fixed) .content-wrapper {
   }
 }
 @media (max-width: 1199.98px) {
-  .layout-menu {
-    position: fixed !important;
-    top: 0 !important;
-    height: 100% !important;
-    left: 0 !important;
-    margin-right: 0 !important;
-    margin-left: 0 !important;
-    transform: translate3d(-100%, 0, 0);
-    will-change: transform, -webkit-transform;
-  }
   .layout-menu-expanded .layout-menu {
     transform: translate3d(0, 0, 0) !important;
   }
@@ -17330,10 +17328,6 @@ html:not(.layout-footer-fixed) .content-wrapper {
   }
   .layout-menu-expanded .layout-overlay {
     display: block;
-  }
-  .layout-menu-100vh .layout-menu,
-  .layout-menu-100vh .layout-overlay {
-    height: 100vh !important;
   }
 }
 .layout-navbar-fixed body:not(.modal-open) .layout-navbar-full .layout-navbar,
@@ -17514,11 +17508,6 @@ html:not(.layout-footer-fixed) .content-wrapper {
 
 .app-brand-img-collapsed {
   display: none;
-}
-
-.menu-vertical .app-brand {
-  padding-right: 2rem;
-  padding-left: 2rem;
 }
 
 .menu-horizontal .app-brand,

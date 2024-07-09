@@ -106,6 +106,8 @@ const Articles = ({ auth, query }) => {
     };
 
     const toggleAccordion = (category) => {
+        setCurrentPage(1);
+
         if (openCategories.includes(category.id)) {
             setOpenCategories(openCategories.filter(id => id !== category.id));
         } else {
@@ -309,7 +311,7 @@ const Articles = ({ auth, query }) => {
                                     )
                                 })
                             ) : (
-                                <p>No articles found</p>
+                                <p className="bg-white p-2 block w-max rounded">No articles found</p>
                             )}
                         </div>
                         {results.length > 0 && (
